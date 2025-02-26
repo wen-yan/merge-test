@@ -37,8 +37,11 @@ jobs:
         run: |
           PR_NUMBER=$(jq -r '.pull_request.number' $GITHUB_EVENT_PATH)
           echo $PR_NUMBER
+          echo "----------"
           echo $(gh pr view $PR_NUMBER)
+          echo "----------"
           echo $(gh pr view $PR_NUMBER --json projectItems)
+          echo "----------"
           PROJECT_ITEMS=$(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems.nodes')
           echo $PROJECT_ITEMS
           if [ "$PROJECT_ITEMS" = "[]" ]; then
