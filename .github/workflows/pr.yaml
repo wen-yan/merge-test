@@ -1,0 +1,38 @@
+name: pr
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize]
+
+jobs:
+  pr-build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .net core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.106
+
+      - name: Build solution - ${{ matrix.configuration }}
+        run: dotnet build --configuration ${{ matrix.configuration }}
+        working-directory: ./src
+
+  pr-check-project-item:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Check if PR is linked to a project item
+        run: |
+          PR_NUMBER=$(jq -r '.pull_request.number' $GITHUB_EVENT_PATH)
+          PROJECT_ITEMS=$(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems.nodes | length')
+          if [ "$PROJECT_ITEMS" -eq 0 ]; then
+            echo "Error: PR is not linked to any project item."
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
