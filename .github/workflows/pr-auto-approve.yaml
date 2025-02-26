@@ -1,4 +1,4 @@
-name: auto-approve-pr
+name: pr-auto-approve
 
 on:
   pull_request:
@@ -6,10 +6,10 @@ on:
 
 jobs:
   auto-approve:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Auto approve if author is specific user
         if: github.event.pull_request.user.login == 'wen-yan'

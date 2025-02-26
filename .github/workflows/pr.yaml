@@ -36,9 +36,11 @@ jobs:
       - name: Check if PR is linked to a project item
         run: |
           PR_NUMBER=$(jq -r '.pull_request.number' $GITHUB_EVENT_PATH)
-          echo PR_NUMBER
-          PROJECT_ITEMS=$(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems.nodes | length')
-          echo PROJECT_ITEMS
+          echo $PR_NUMBER
+          echo $(gh pr view $PR_NUMBER)
+          echo $(gh pr view $PR_NUMBER --json projectItems)
+          PROJECT_ITEMS=$(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems.nodes')
+          echo $PROJECT_ITEMS
           if [ "$PROJECT_ITEMS" = "[]" ]; then
             echo "Error: PR is not linked to any project item."
             exit 1
