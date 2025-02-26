@@ -42,9 +42,9 @@ jobs:
           echo "----------"
           echo $(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems')
           echo "----------"
-          echo $(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems.nodes')
+          echo $(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems[].nodes[]')
           echo "----------"
-          PROJECT_ITEMS=$(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems')
+          PROJECT_ITEMS=$(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems[].nodes[]')
           echo $PROJECT_ITEMS
           if [ "$PROJECT_ITEMS" = "[]" ]; then
             echo "Error: PR is not linked to any project item."
