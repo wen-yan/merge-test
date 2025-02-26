@@ -15,4 +15,4 @@ jobs:
         if: github.event.pull_request.user.login == 'wen-yan'
         uses: hmarr/auto-approve-action@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.BOT_TOKEN }}
