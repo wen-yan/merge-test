@@ -23,3 +23,33 @@ jobs:
       - name: Build solution - ${{ matrix.configuration }}
         run: dotnet build --configuration ${{ matrix.configuration }}
         working-directory: ./src
+
+  pr-check-branch-name:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check branch name
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          branch_name_regex="^dev-[a-zA-Z0-9_-]+$"
+          if [[ ! "$BRANCH_NAME" =~ $branch_name_regex ]]; then
+            echo "Error: pull request branch name '$BRANCH_NAME' does not match the required pattern '$branch_name_regex'."
+            exit 1
+          else
+            echo "pull request branch name '$BRANCH_NAME' matches the required pattern '$branch_name_regex'."
+          fi
+
+      #   uses: actions/setup-dotnet@v4
+      #   with:
+      #     dotnet-version: 8.0.106
+
+      # - name: Build solution - ${{ matrix.configuration }}
+      #   run: dotnet build --configuration ${{ matrix.configuration }}
+      #   working-directory: ./src
+
