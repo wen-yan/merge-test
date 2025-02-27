@@ -1,4 +1,5 @@
 name: pr
+
 on:
   pull_request:
     branches: [master]
@@ -22,33 +23,3 @@ jobs:
       - name: Build solution - ${{ matrix.configuration }}
         run: dotnet build --configuration ${{ matrix.configuration }}
         working-directory: ./src
-
-  pr-check-project-item:
-    runs-on: ubuntu-22.04
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install GitHub CLI
-        run: sudo apt-get install gh
-
-      - name: Check if PR is linked to a project item
-        run: |
-          PR_NUMBER=$(jq -r '.pull_request.number' $GITHUB_EVENT_PATH)
-          echo $PR_NUMBER
-          echo "----------"
-          echo $(gh pr view $PR_NUMBER)
-          echo "----------"
-          echo $(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems')
-          echo "----------"
-          echo $(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems[].nodes[]')
-          echo "----------"
-          PROJECT_ITEMS=$(gh pr view $PR_NUMBER --json projectItems --jq '.projectItems[].nodes[]')
-          echo $PROJECT_ITEMS
-          if [[ "$PROJECT_ITEMS" = "[]" || -z "$PROJECT_ITEMS" ]]; then
-            echo "Error: PR is not linked to any project item."
-            exit 1
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
