@@ -26,9 +26,6 @@ jobs:
 
   pr-check-branch-name:
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
 
     steps:
       - name: Checkout code
@@ -36,7 +33,7 @@ jobs:
 
       - name: Check branch name
         run: |
-          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          BRANCH_NAME=${{ github.event.pull_request.head.ref }}
           branch_name_regex="^dev-[a-zA-Z0-9_-]+$"
           if [[ ! "$BRANCH_NAME" =~ $branch_name_regex ]]; then
             echo "Error: pull request branch name '$BRANCH_NAME' does not match the required pattern '$branch_name_regex'."
